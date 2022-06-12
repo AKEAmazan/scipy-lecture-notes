@@ -4,6 +4,7 @@ Constraint optimization: visualizing the geometry
 
 A small figure explaining optimization with constraints
 """
+
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import optimize
@@ -41,7 +42,7 @@ for i in (1, 2):
     plt.axis('off')
 
 # And now plot the optimization path
-accumulator = list()
+accumulator = []
 
 def f(x):
     # Store the list of function calls

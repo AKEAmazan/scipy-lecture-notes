@@ -5,6 +5,7 @@ Optimization with constraints
 An example showing how to do optimization with general constraints using
 SLSQP and cobyla.
 """
+
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import optimize
@@ -39,7 +40,7 @@ plt.axis('tight')
 plt.axis('off')
 
 # And now plot the optimization path
-accumulator = list()
+accumulator = []
 
 def f(x):
     # Store the list of function calls

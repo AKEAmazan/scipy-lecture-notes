@@ -12,18 +12,11 @@ def qsort(lst):
     # Could use list comprehension:
     # less_than      = [ lt for lt in rest if lt < pivot ]
 
-    less_than = []
-    for lt in rest:
-        if lt < pivot:
-            less_than.append(lt)
-
+    less_than = [lt for lt in rest if lt < pivot]
     # Could use list comprehension:
     # greater_equal  = [ ge for ge in rest if ge >= pivot ]
 
-    greater_equal = []
-    for ge in rest:
-        if ge >= pivot:
-            greater_equal.append(ge)
+    greater_equal = [ge for ge in rest if ge >= pivot]
     return qsort(less_than) + [pivot] + qsort(greater_equal)
 
 # And now check that qsort does sort:

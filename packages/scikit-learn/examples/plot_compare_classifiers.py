@@ -6,6 +6,7 @@ Compare the performance of a variety of classifiers on a test set for the
 digits data.
 """
 
+
 from sklearn import model_selection, datasets, metrics
 from sklearn.svm import LinearSVC
 from sklearn.naive_bayes import GaussianNB
@@ -20,8 +21,7 @@ X_train, X_test, y_train, y_test = model_selection.train_test_split(X, y,
 for Model in [LinearSVC, GaussianNB, KNeighborsClassifier]:
     clf = Model().fit(X_train, y_train)
     y_pred = clf.predict(X_test)
-    print('%s: %s' %
-          (Model.__name__, metrics.f1_score(y_test, y_pred, average="macro")))
+    print(f'{Model.__name__}: {metrics.f1_score(y_test, y_pred, average="macro")}')
 
 print('------------------')
 

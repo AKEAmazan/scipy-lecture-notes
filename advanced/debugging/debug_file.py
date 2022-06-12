@@ -4,15 +4,11 @@ Data is stored in data.txt.
 """
 
 def parse_data(data_string):
-    data = []
-    for x in data_string.split('.'):
-        data.append(x)
-    return data
+    return list(data_string.split('.'))
 
 def load_data(filename):
-    fp = open(filename)
-    data_string = fp.read()
-    fp.close()
+    with open(filename) as fp:
+        data_string = fp.read()
     return parse_data(data_string)
 
 if __name__ == '__main__':

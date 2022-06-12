@@ -6,6 +6,7 @@ Use the RidgeCV and LassoCV to set the regularization parameter
 
 """
 
+
 ############################################################
 # Load the diabetes dataset
 from sklearn.datasets import load_diabetes
@@ -20,8 +21,7 @@ from sklearn.linear_model import Ridge, Lasso
 
 for Model in [Ridge, Lasso]:
     model = Model()
-    print('%s: %s' % (Model.__name__,
-                      cross_val_score(model, X, y).mean()))
+    print(f'{Model.__name__}: {cross_val_score(model, X, y).mean()}')
 
 ############################################################
 # We compute the cross-validation score as a function of alpha, the

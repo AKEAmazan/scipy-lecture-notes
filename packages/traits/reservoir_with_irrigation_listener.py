@@ -20,7 +20,7 @@ class Reservoir(HasTraits):
     total_crop_surface = Property(depends_on='irrigated_areas.surface')
 
     def _get_total_crop_surface(self):
-        return sum([iarea.surface for iarea in self.irrigated_areas])
+        return sum(iarea.surface for iarea in self.irrigated_areas)
 
     def energy_production(self, release):
         ''' Returns the energy production [Wh] for the given release [m3/s]
@@ -52,6 +52,6 @@ if __name__ == '__main__':
                     )
 
     release = 80
-    print('Releasing {} m3/s produces {} kWh'.format(
-        release, reservoir.energy_production(release)
-    ))
+    print(
+        f'Releasing {release} m3/s produces {reservoir.energy_production(release)} kWh'
+    )

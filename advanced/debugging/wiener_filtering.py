@@ -34,7 +34,7 @@ def iterated_wiener(noisy_img, size=3):
     noisy_img = noisy_img
     denoised_img = local_mean(noisy_img, size=size)
     l_var = local_var(noisy_img, size=size)
-    for i in range(3):
+    for _ in range(3):
         res = noisy_img - denoised_img
         noise = (res**2).sum()/res.size
         noise_level = (1 - noise/l_var )

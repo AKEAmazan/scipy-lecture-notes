@@ -10,7 +10,7 @@ def test_filter_and_sort():
     assert len(file_list2) == 0
 
     # Test that the otuput file list is ordered by length.
-    file_list = [ n + '.py' for n in file_list]
+    file_list = [f'{n}.py' for n in file_list]
     file_list2 = dir_sort.filter_and_sort(file_list)
     name1 = file_list2.pop(0)
     for name in file_list2:

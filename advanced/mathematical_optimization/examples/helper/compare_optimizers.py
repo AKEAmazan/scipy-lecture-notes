@@ -50,8 +50,7 @@ def bencher(cost_name, ndim, method_name, x0):
     method = methods[method_name]
     f = LoggingFunction(cost_function)
     method(f, x0)
-    this_costs = np.array(f.all_f_i)
-    return this_costs
+    return np.array(f.all_f_i)
 
 
 # Bench with gradients
@@ -96,62 +95,23 @@ def mk_costs(ndim=2):
 # Compare methods without gradient
 mem = Memory('.', verbose=3)
 
-if True:
-    gradient_less_benchs = dict()
+gradient_less_benchs = {}
 
-    for ndim in (2, 8, 32, 128):
-        this_dim_benchs = dict()
-        costs, starting_points = mk_costs(ndim)
-        for cost_name, cost_function in costs.items():
-            # We don't need the derivative or the hessian
-            cost_function = cost_function[0]
-            function_bench = dict()
-            for x0 in starting_points:
-                all_bench = list()
-                # Bench gradient-less
-                for method_name, method in methods.items():
-                    if method_name in ('Newton', "L-BFGS w f'"):
-                        continue
-                    this_bench = function_bench.get(method_name, list())
-                    this_costs = mem.cache(bencher)(cost_name, ndim,
-                                                    method_name, x0)
-                    if np.all(this_costs > .25*ndim**2*1e-9):
-                        convergence = 2*len(this_costs)
-                    else:
-                        convergence = np.where(
-                                        np.diff(this_costs > .25*ndim**2*1e-9)
-                                    )[0].max() + 1
-                    this_bench.append(convergence)
-                    all_bench.append(convergence)
-                    function_bench[method_name] = this_bench
-
-                # Bench with gradients
-                for method_name, method in methods.items():
-                    if method_name in ('Newton', 'Powell', 'Nelder-mead',
-                                       "L-BFGS"):
-                        continue
-                    this_method_name = method_name
-                    if method_name.endswith(" w f'"):
-                        this_method_name = method_name[:-4]
-                    this_method_name = this_method_name + "\nw f'"
-                    this_bench = function_bench.get(this_method_name, list())
-                    this_costs, this_counts = mem.cache(bencher_gradient)(
-                                        cost_name, ndim, method_name, x0)
-                    if np.all(this_costs > .25*ndim**2*1e-9):
-                        convergence = 2*this_counts.max()
-                    else:
-                        convergence = np.where(
-                                        np.diff(this_costs > .25*ndim**2*1e-9)
-                                        )[0].max() + 1
-                        convergence = this_counts[convergence]
-                    this_bench.append(convergence)
-                    all_bench.append(convergence)
-                    function_bench[this_method_name] = this_bench
-
-                # Bench Newton with Hessian
-                method_name = 'Newton'
+for ndim in (2, 8, 32, 128):
+    this_dim_benchs = {}
+    costs, starting_points = mk_costs(ndim)
+    for cost_name, cost_function in costs.items():
+        # We don't need the derivative or the hessian
+        cost_function = cost_function[0]
+        function_bench = {}
+        for x0 in starting_points:
+            all_bench = []
+            # Bench gradient-less
+            for method_name, method in methods.items():
+                if method_name in ('Newton', "L-BFGS w f'"):
+                    continue
                 this_bench = function_bench.get(method_name, list())
-                this_costs, this_counts = mem.cache(bencher_hessian)(cost_name, ndim,
+                this_costs = mem.cache(bencher)(cost_name, ndim,
                                                 method_name, x0)
                 if np.all(this_costs > .25*ndim**2*1e-9):
                     convergence = 2*len(this_costs)
@@ -161,17 +121,57 @@ if True:
                                 )[0].max() + 1
                 this_bench.append(convergence)
                 all_bench.append(convergence)
-                function_bench[method_name + '\nw Hessian '] = this_bench
+                function_bench[method_name] = this_bench
 
-                # Normalize across methods
-                x0_mean = np.mean(all_bench)
-                for method_name in function_bench:
-                    function_bench[method_name][-1] /= x0_mean
-            this_dim_benchs[cost_name] = function_bench
-        gradient_less_benchs[ndim] = this_dim_benchs
-        print(80*'_')
-        print('Done cost %s, ndim %s' % (cost_name, ndim))
-        print(80*'_')
+            # Bench with gradients
+            for method_name, method in methods.items():
+                if method_name in ('Newton', 'Powell', 'Nelder-mead',
+                                   "L-BFGS"):
+                    continue
+                this_method_name = method_name
+                if method_name.endswith(" w f'"):
+                    this_method_name = method_name[:-4]
+                this_method_name = this_method_name + "\nw f'"
+                this_bench = function_bench.get(this_method_name, list())
+                this_costs, this_counts = mem.cache(bencher_gradient)(
+                                    cost_name, ndim, method_name, x0)
+                if np.all(this_costs > .25*ndim**2*1e-9):
+                    convergence = 2*this_counts.max()
+                else:
+                    convergence = np.where(
+                                    np.diff(this_costs > .25*ndim**2*1e-9)
+                                    )[0].max() + 1
+                    convergence = this_counts[convergence]
+                this_bench.append(convergence)
+                all_bench.append(convergence)
+                function_bench[this_method_name] = this_bench
 
-    pickle.dump(gradient_less_benchs,
-                open('compare_optimizers_py%s.pkl' % sys.version_info[0], 'wb'))
+            # Bench Newton with Hessian
+            method_name = 'Newton'
+            this_bench = function_bench.get(method_name, list())
+            this_costs, this_counts = mem.cache(bencher_hessian)(cost_name, ndim,
+                                            method_name, x0)
+            if np.all(this_costs > .25*ndim**2*1e-9):
+                convergence = 2*len(this_costs)
+            else:
+                convergence = np.where(
+                                np.diff(this_costs > .25*ndim**2*1e-9)
+                            )[0].max() + 1
+            this_bench.append(convergence)
+            all_bench.append(convergence)
+            function_bench[method_name + '\nw Hessian '] = this_bench
+
+            # Normalize across methods
+            x0_mean = np.mean(all_bench)
+            for value in function_bench.values():
+                value[-1] /= x0_mean
+        this_dim_benchs[cost_name] = function_bench
+    gradient_less_benchs[ndim] = this_dim_benchs
+    print(80*'_')
+    print(f'Done cost {cost_name}, ndim {ndim}')
+    print(80*'_')
+
+pickle.dump(
+    gradient_less_benchs,
+    open(f'compare_optimizers_py{sys.version_info[0]}.pkl', 'wb'),
+)

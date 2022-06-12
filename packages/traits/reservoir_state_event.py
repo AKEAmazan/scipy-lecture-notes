@@ -33,7 +33,7 @@ class ReservoirState(HasTraits):
 
     def print_state(self):
         print('Storage\tRelease\tInflows\tSpillage')
-        str_format = '\t'.join(['{:7.2f}'for i in range(4)])
+        str_format = '\t'.join(['{:7.2f}' for _ in range(4)])
         print(str_format.format(self.storage, self.release, self.inflows,
                 self.spillage))
         print('-' * 79)

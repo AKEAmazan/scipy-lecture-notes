@@ -5,12 +5,13 @@ Marker edge color
 Demo the marker edge color of matplotlib's markers.
 """
 
+
 import numpy as np
 import matplotlib.pyplot as plt
 
 size = 256,16
 dpi = 72.0
-figsize= size[0] / float(dpi), size[1] / float(dpi)
+figsize = size[0] / dpi, size[1] / dpi
 fig = plt.figure(figsize=figsize, dpi=dpi)
 fig.patch.set_alpha(0)
 plt.axes([0, 0, 1, 1], frameon=False)

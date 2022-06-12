@@ -21,7 +21,7 @@ class ReservoirState(HasTraits):
 
     def print_state(self):
         print('Storage\tRelease\tInflows\tSpillage')
-        str_format = '\t'.join(['{:7.2f}'for i in range(4)])
+        str_format = '\t'.join(['{:7.2f}' for _ in range(4)])
         print(str_format.format(self.storage, self.release, self.inflows,
                 self.spillage))
         print('-' * 79)
@@ -33,7 +33,7 @@ class ReservoirState(HasTraits):
         """
 
         if new > 0:
-            print('Warning, we are releasing {} hm3 of water'.format(new))
+            print(f'Warning, we are releasing {new} hm3 of water')
 
 
 if __name__ == '__main__':

@@ -38,11 +38,10 @@ m = 3  # Blocksize
 n = 2500
 A,B, w_ex = sakurai(n) # Mikota pair
 X = rand(n,m)
-data=[]
 tt = time.clock()
 eigs,vecs, resnh = lobpcg(A,X,B, tol=1e-6, maxiter=500, retResidualNormsHistory=1)
-data.append(time.clock()-tt)
-print('Results by LOBPCG for n='+str(n))
+data = [time.clock() - tt]
+print(f'Results by LOBPCG for n={n}')
 print('')
 print(eigs)
 print('')

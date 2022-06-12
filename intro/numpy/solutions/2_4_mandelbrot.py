@@ -15,12 +15,10 @@ def compute_mandelbrot(N_max, some_threshold, nx, ny):
     # Mandelbrot iteration
 
     z = c
-    for j in range(N_max):
+    for _ in range(N_max):
         z = z**2 + c
 
-    mandelbrot_set = (abs(z) < some_threshold)
-
-    return mandelbrot_set
+    return (abs(z) < some_threshold)
 
 # Save
 
