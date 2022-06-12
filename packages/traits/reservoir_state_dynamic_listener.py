@@ -3,7 +3,7 @@ from reservoir_state_property import ReservoirState
 
 def wake_up_watchman_if_spillage(new_value):
     if new_value > 0:
-        print('Wake up watchman! Spilling {} hm3'.format(new_value))
+        print(f'Wake up watchman! Spilling {new_value} hm3')
 
 if __name__ == '__main__':
     projectA = Reservoir(

@@ -21,9 +21,10 @@ def granulometry(data, sizes=None):
     s = max(data.shape)
     if sizes is None:
         sizes = range(1, s/2, 2)
-    granulo = [ndimage.binary_opening(data, \
-            structure=disk_structure(n)).sum() for n in sizes]
-    return granulo
+    return [
+        ndimage.binary_opening(data, structure=disk_structure(n)).sum()
+        for n in sizes
+    ]
 
 
 np.random.seed(1)

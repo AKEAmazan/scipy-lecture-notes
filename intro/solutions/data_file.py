@@ -9,18 +9,11 @@ Data is stored in data.txt.
 """
 
 def load_data(filename):
-    fp = open(filename)
-    data_string = fp.read()
-    fp.close()
-
-    data = []
-    for x in data_string.split():
-        # Data is read in as a string. We need to convert it to floats
-        data.append(float(x))
-
+    with open(filename) as fp:
+        data_string = fp.read()
     # Could instead use the following one line with list comprehensions!
     # data = [float(x) for x in data_string.split()]
-    return data
+    return [float(x) for x in data_string.split()]
 
 if __name__ == '__main__':
     data = load_data('data.txt')

@@ -35,21 +35,21 @@ def _ica_def(X, tol, g, gprime, fun_args, maxit, w_init):
 
         n_iterations = 0
         # we set lim to tol+1 to be sure to enter at least once in next while
-        lim = tol + 1 
+        lim = tol + 1
         while ((lim > tol) & (n_iterations < (maxit-1))):
             wtx = np.dot(w.T, X)
             gwtx = g(wtx, fun_args)
             g_wtx = gprime(wtx, fun_args)
             w1 = (X * gwtx).mean(axis=1) - g_wtx.mean() * w
-            
+
             _gs_decorrelation(w1, W, j)
-            
+
             w1 /= np.sqrt((w1**2).sum())
 
             lim = np.abs(np.abs((w1 * w).sum()) - 1)
             w = w1
-            n_iterations = n_iterations + 1
-            
+            n_iterations += 1
+
         W[j, :] = w
 
     return W
@@ -73,23 +73,23 @@ def _ica_par(X, tol, g, gprime, fun_args, maxit, w_init):
 
     """
     n,p = X.shape
-    
+
     W = _sym_decorrelation(w_init)
 
     # we set lim to tol+1 to be sure to enter at least once in next while
-    lim = tol + 1 
+    lim = tol + 1
     it = 0
     while ((lim > tol) and (it < (maxit-1))):
         wtx = np.dot(W, X).A  # .A transforms to array type
         gwtx = g(wtx, fun_args)
         g_wtx = gprime(wtx, fun_args)
         W1 = np.dot(gwtx, X.T)/float(p) - np.dot(np.diag(g_wtx.mean(axis=1)), W)
- 
+
         W1 = _sym_decorrelation(W1)
-        
+
         lim = max(abs(abs(np.diag(np.dot(W1, W.T))) - 1))
         W = W1
-        it = it + 1
+        it += 1
 
     return W
 

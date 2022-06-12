@@ -127,5 +127,5 @@ for s in ((inputtemplate.format('1', 'a[(0,1,2,3,4), (1,2,3,4,5)]')
 
 
 basename = os.path.splitext(sys.argv[0])[0]
-c.writeGSfile(basename+'.png', resolution=150)
+c.writeGSfile(f'{basename}.png', resolution=150)
 c.writePDFfile(basename)

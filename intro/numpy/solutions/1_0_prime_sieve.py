@@ -5,6 +5,7 @@ Computing prime numbers with the archimedean sieve.
 
 """
 
+
 import numpy as np
 
 eratosthenes = True
@@ -15,18 +16,11 @@ N = 10000
 # mask for prime numbers
 mask = np.ones([N], dtype=bool)
 
-if not eratosthenes:
-    # simple prime sieve
-    mask[:2] = False
-    for j in range(2, int(np.sqrt(N)) + 1):
+# simple prime sieve
+mask[:2] = False
+for j in range(2, int(np.sqrt(N)) + 1):
+    if eratosthenes and mask[j] or not eratosthenes:
         mask[j*j::j] = False
-
-else:
-    # Eratosthenes sieve
-    mask[:2] = False
-    for j in range(2, int(np.sqrt(N)) + 1):
-        if mask[j]:
-            mask[j*j::j] = False
 
 # print indices where mask is True
 print(np.nonzero(mask)[0])

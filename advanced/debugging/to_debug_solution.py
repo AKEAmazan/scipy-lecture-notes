@@ -50,9 +50,7 @@ def compare_optimizers(optimizers):
     random_a = -1.3 + np.random.random(size=100)
     random_b =   .3 + np.random.random(size=100)
     param_grid = product(FUNCTIONS, random_a, random_b)
-    values = []
-    for value in param_grid:
-        values.append(value)
+    values = list(param_grid)
     param_grid = values
     print("Benching 1D root-finder optimizers from scipy.optimize:")
     for optimizer in OPTIMIZERS:

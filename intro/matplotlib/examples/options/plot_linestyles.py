@@ -21,7 +21,7 @@ n_lines = len(linestyles)
 
 size = 20 * n_lines, 300
 dpi = 72.0
-figsize= size[0] / float(dpi), size[1] / float(dpi)
+figsize = size[0] / dpi, size[1] / dpi
 fig = plt.figure(figsize=figsize, dpi=dpi)
 plt.axes([0, 0.01, 1, .9], frameon=False)
 

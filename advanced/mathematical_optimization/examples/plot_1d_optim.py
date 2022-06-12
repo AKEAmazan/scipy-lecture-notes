@@ -15,7 +15,7 @@ x_0 = np.exp(-1)
 def f(x):
     return (x - x_0)**2 + epsilon*np.exp(-5*(x - .5 - x_0)**2)
 
-for epsilon in (0, 1):
+for _ in (0, 1):
     plt.figure(figsize=(3, 2.5))
     plt.axes([0, 0, 1, 1])
 
@@ -24,8 +24,8 @@ for epsilon in (0, 1):
 
     # Apply brent method. To have access to the iteration, do this in an
     # artificial way: allow the algorithm to iter only once
-    all_x = list()
-    all_y = list()
+    all_x = []
+    all_y = []
     for iter in range(30):
         result = optimize.minimize_scalar(f, bracket=(-5, 2.9, 4.5), method="Brent",
                     options={"maxiter": iter}, tol=np.finfo(1.).eps)

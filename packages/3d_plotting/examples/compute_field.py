@@ -20,11 +20,7 @@ def base_vectors(n):
 
     # choose two vectors perpendicular to n
     # choice is arbitrary since the coil is symetric about n
-    if abs(n[0]) == 1 :
-        l = np.r_[n[2], 0, -n[0]]
-    else:
-        l = np.r_[0, n[2], -n[1]]
-
+    l = np.r_[n[2], 0, -n[0]] if abs(n[0]) == 1 else np.r_[0, n[2], -n[1]]
     l = l / np.sqrt(np.square(l).sum(axis=-1))
     m = np.cross(n, l)
     return n, l, m

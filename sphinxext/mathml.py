@@ -80,7 +80,7 @@ def setup(app):
     def visit_latex_math_latex(self, node):
         inline = isinstance(node.parent, nodes.TextElement)
         if inline:
-            self.body.append('$%s$' % node['latex'])
+            self.body.append(f"${node['latex']}$")
         else:
             self.body.extend(['\\begin{equation}',
                               node['latex'],
@@ -117,8 +117,11 @@ class math:
 
     def __repr__(self):
         if hasattr(self, 'children'):
-            return self.__class__.__name__ + '(%s)' % \
-                   ','.join([repr(child) for child in self.children])
+            return (
+                self.__class__.__name__
+                + f"({','.join([repr(child) for child in self.children])})"
+            )
+
         else:
             return self.__class__.__name__
 
@@ -167,7 +170,7 @@ class math:
 
     def xml_start(self):
         if not hasattr(self, 'inline'):
-            return ['<%s>' % self.__class__.__name__]
+            return [f'<{self.__class__.__name__}>']
         xmlns = 'http://www.w3.org/1998/Math/MathML'
         if self.inline:
             return ['<math xmlns="%s">' % xmlns]
@@ -175,7 +178,7 @@ class math:
             return ['<math xmlns="%s" mode="display">' % xmlns]
 
     def xml_end(self):
-        return ['</%s>' % self.__class__.__name__]
+        return [f'</{self.__class__.__name__}>']
 
     def xml_body(self):
         xml = []
@@ -347,14 +350,11 @@ def parse_latex_math(string, inline=True):
         node = mtd()
         tree = math(mtable(mtr(node)), inline=False)
 
-    while len(string) > 0:
+    while string != '':
         n = len(string)
         c = string[0]
         skip = 1  # number of characters consumed
-        if n > 1:
-            c2 = string[1]
-        else:
-            c2 = ''
+        c2 = string[1] if n > 1 else ''
 ##        print n, string, c, c2, node.__class__.__name__
         if c == ' ':
             pass
@@ -542,11 +542,10 @@ def handle_keyword(name, node, string):
         node = node.append(mo(name))
     else:
         chr = over.get(name)
-        if chr is not None:
-            ovr = mover(mo(chr), reversed=True)
-            node.append(ovr)
-            node = ovr
-        else:
-            raise SyntaxError('Unknown LaTeX command: ' + name)
+        if chr is None:
+            raise SyntaxError(f'Unknown LaTeX command: {name}')
 
+        ovr = mover(mo(chr), reversed=True)
+        node.append(ovr)
+        node = ovr
     return node, skip

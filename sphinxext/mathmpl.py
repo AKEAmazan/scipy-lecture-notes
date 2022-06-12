@@ -76,7 +76,7 @@ def setup(app):
     def visit_latex_math_latex(self, node):
         inline = isinstance(node.parent, nodes.TextElement)
         if inline:
-            self.body.append('$%s$' % node['latex'])
+            self.body.append(f"${node['latex']}$")
         else:
             self.body.extend(['\\begin{equation}',
                               node['latex'],
@@ -94,7 +94,7 @@ mathtext_parser = MathTextParser("Bitmap")
 
 # This uses mathtext to render the expression
 def latex2png(latex, filename, fontset='cm'):
-    latex = "$%s$" % latex
+    latex = f"${latex}$"
     orig_fontset = rcParams['mathtext.fontset']
     rcParams['mathtext.fontset'] = fontset
     if os.path.exists(filename):
@@ -103,8 +103,7 @@ def latex2png(latex, filename, fontset='cm'):
         try:
             depth = mathtext_parser.to_png(filename, latex, dpi=100)
         except:
-            warnings.warn("Could not render math expression %s" % latex,
-                          Warning)
+            warnings.warn(f"Could not render math expression {latex}", Warning)
             depth = 0
     rcParams['mathtext.fontset'] = orig_fontset
     return depth
@@ -113,20 +112,17 @@ def latex2png(latex, filename, fontset='cm'):
 def latex2html(node, source):
     inline = isinstance(node.parent, nodes.TextElement)
     latex = node['latex']
-    name = 'math-%s' % md5(latex).hexdigest()[-10:]
-    dest = '_static/%s.png' % name
+    name = f'math-{md5(latex).hexdigest()[-10:]}'
+    dest = f'_static/{name}.png'
     depth = latex2png(latex, dest, node['fontset'])
 
     path = '_static'
     count = source.split('/doc/')[-1].count('/')
-    for i in range(count):
+    for _ in range(count):
         if os.path.exists(path): break
-        path = '../'+path
-    path = '../'+path #specifically added for matplotlib
-    if inline:
-        cls = ''
-    else:
-        cls = 'class="center" '
+        path = f'../{path}'
+    path = f'../{path}'
+    cls = '' if inline else 'class="center" '
     if inline and depth != 0:
         style = 'style="position: relative; bottom: -%dpx"' % (depth + 1)
     else:

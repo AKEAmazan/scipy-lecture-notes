@@ -6,15 +6,17 @@ Plots the results from the comparison of optimizers.
 
 """
 
+
 import pickle
 import sys
 
 import numpy as np
 import matplotlib.pyplot as plt
 
-results = pickle.load(open(
-    'helper/compare_optimizers_py%s.pkl' % sys.version_info[0],
-    'rb'))
+results = pickle.load(
+    open(f'helper/compare_optimizers_py{sys.version_info[0]}.pkl', 'rb')
+)
+
 n_methods = len(list(results.values())[0]['Rosenbrock  '])
 n_dims = len(results)
 

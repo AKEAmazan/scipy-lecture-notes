@@ -109,12 +109,11 @@ def parse_sphinx_searchindex(searchindex):
 
             if depth == 0:
                 break
-        sel = str_in[start_pos + 1:pos]
-        return sel
+        return str_in[start_pos + 1:pos]
 
     def _parse_dict_recursive(dict_str):
         """Parse a dictionary from the search index"""
-        dict_out = dict()
+        dict_out = {}
         pos_last = 0
         pos = dict_str.find(':')
         while pos >= 0:
@@ -200,7 +199,7 @@ class SphinxDocLinkResolver(object):
             if relative:
                 raise ValueError('Relative links are only supported for local '
                                  'URLs (doc_url cannot start with "http://)"')
-            searchindex_url = doc_url + '/' + searchindex
+            searchindex_url = f'{doc_url}/{searchindex}'
         else:
             searchindex_url = os.path.join(doc_url, searchindex)
 
@@ -252,12 +251,11 @@ class SphinxDocLinkResolver(object):
             # test if cobj appears in page
             comb_names = [cobj['module_short'] + '.' + cobj['name']]
             if self.extra_modules_test is not None:
-                for mod in self.extra_modules_test:
-                    comb_names.append(mod + '.' + cobj['name'])
+                comb_names.extend(f'{mod}.' + cobj['name'] for mod in self.extra_modules_test)
             url = False
             for comb_name in comb_names:
                 if html.find(comb_name) >= 0:
-                    url = link + '#' + comb_name
+                    url = f'{link}#{comb_name}'
             link = url
         else:
             link = False
@@ -377,21 +375,16 @@ def extract_docstring(filename, ignore_heading=False):
             continue
         elif tok_type == 'STRING':
             docstring = eval(tok_content)
-            # If the docstring is formatted with several paragraphs, extract
-            # the first one:
-            paragraphs = '\n'.join(
-                line.rstrip() for line
-                in docstring.split('\n')).split('\n\n')
-            if paragraphs:
+            if paragraphs := '\n'.join(
+                line.rstrip() for line in docstring.split('\n')
+            ).split('\n\n'):
                 if ignore_heading:
-                    if len(paragraphs) > 1:
-                        first_par = re.sub('\n', ' ', paragraphs[1])
-                        first_par = ((first_par[:95] + '...')
-                                     if len(first_par) > 95 else first_par)
-                    else:
+                    if len(paragraphs) <= 1:
                         raise ValueError("Docstring not found by gallery",
                                          "Please check your example's layout",
                                          " and make sure it's correct")
+                    first_par = re.sub('\n', ' ', paragraphs[1])
+                    first_par = f'{first_par[:95]}...' if len(first_par) > 95 else first_par
                 else:
                     first_par = paragraphs[0]
 
@@ -585,11 +578,7 @@ def make_thumbnail(in_fname, out_fname, width, height):
     scale_w = width / float(width_in)
     scale_h = height / float(height_in)
 
-    if height_in * scale_w <= height:
-        scale = scale_w
-    else:
-        scale = scale_h
-
+    scale = scale_w if height_in * scale_w <= height else scale_h
     width_sc = int(round(scale * width_in))
     height_sc = int(round(scale * height_in))
 
@@ -619,7 +608,7 @@ def get_short_module_name(module_name, obj_name):
     for i in range(len(parts) - 1, 0, -1):
         short_name = '.'.join(parts[:i])
         try:
-            exec('from %s import %s' % (short_name, obj_name))
+            exec(f'from {short_name} import {obj_name}')
         except ImportError:
             # get the last working module name
             short_name = '.'.join(parts[:(i + 1)])
